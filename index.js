@@ -63,6 +63,7 @@ var geoJSONObj = JSON.parse(geoJSONString)
 
 var vectorLayer = new VectorLayer({
   source: new VectorSource({
+    // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
     features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(geoJSONObj)
   }),
   style: function(feature) {
@@ -71,6 +72,7 @@ var vectorLayer = new VectorLayer({
   }
 })
 
+// create map
 var map = new Map({
   layers: [new TileLayer({
     source: new OSM()
@@ -103,6 +105,8 @@ var displayFeatureInfo = function(pixel) {
     // calc land% and water% and populate "info" div
     var landPercent = ((feature.get("ALAND") * 100 / (feature.get("ALAND") + feature.get("AWATER"))).toFixed(1))
     var waterPercent = Number((feature.get("AWATER") * 100 / (feature.get("ALAND") + feature.get("AWATER"))).toFixed(1))
+
+    // populate div with feature information
     info.innerHTML = feature.get("NAME") + " (" + feature.get("STUSPS") + "): " + landPercent + "% land, " + waterPercent + "% water"
   } else {
     info.innerHTML = "&nbsp;"
