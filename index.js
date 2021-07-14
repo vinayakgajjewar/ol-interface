@@ -54,8 +54,13 @@ var highlightStyle = new Style({
   })
 })
 
+// county data can't be pushed to github because the file is too large
+// have to download it into data/geojson first
+var statePath = "data/geojson/TIGER2018_STATE_data_index.geojson"
+var countyPath = "data/geojson/TIGER2018_COUNTY_california.geojson"
+
 // read and parse geojson file
-var geoJSONString = fs.readFileSync("data/geojson/TIGER2018_STATE_data_index.geojson", {
+var geoJSONString = fs.readFileSync(countyPath, {
   encoding: "utf8",
   flag: "r"
 })
