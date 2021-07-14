@@ -54,13 +54,14 @@ var highlightStyle = new Style({
   })
 })
 
-// county data can't be pushed to github because the file is too large
-// have to download it into data/geojson first
+// county data is only for california
+// place data is only for la/riverside/san diego area
 var statePath = "data/geojson/TIGER2018_STATE_data_index.geojson"
 var countyPath = "data/geojson/TIGER2018_COUNTY_california.geojson"
+var placePath = "data/geojson/TIGER2018_PLACE_riverside.geojson"
 
 // read and parse geojson file
-var geoJSONString = fs.readFileSync(countyPath, {
+var geoJSONString = fs.readFileSync(placePath, {
   encoding: "utf8",
   flag: "r"
 })
