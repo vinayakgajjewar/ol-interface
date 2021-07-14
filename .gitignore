@@ -1,3 +1,4 @@
 node_modules/
 dist/
 .parcel-cache/
+data/geojson/.DS_Store
