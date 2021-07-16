@@ -120,8 +120,11 @@ var featureOverlay = new VectorLayer({
   }
 })
 
+// function to make selected feature red and display feature info
 var highlight
 var displayFeatureInfo = function(pixel) {
+
+  // get feature
   var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature
   })
@@ -150,14 +153,35 @@ var displayFeatureInfo = function(pixel) {
   }
 }
 
+// function to make selected feature red
+var highlightFeature = function(pixel) {
+
+  // get feature
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+    return feature
+  })
+
+  if (feature !== highlight) {
+    if (highlight) {
+      featureOverlay.getSource().removeFeature(highlight)
+    }
+    if (feature) {
+      featureOverlay.getSource().addFeature(feature)
+    }
+    highlight = feature
+  }
+}
+
+// change feature color on mouse hover
 map.on("pointermove", function(evt) {
   if (evt.dragging) {
     return
   }
-  var pixel = map.getEventPixel(evt.originalevent)
-  displayFeatureInfo(pixel)
+  const pixel = map.getEventPixel(evt.originalEvent)
+  highlightFeature(pixel)
 })
 
+// display feature info on mouse click
 map.on("click", function(evt) {
   displayFeatureInfo(evt.pixel)
 })
