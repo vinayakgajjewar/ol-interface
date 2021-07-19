@@ -89,6 +89,7 @@ var zcta5GeoJSONObj = JSON.parse(zcta5GeoJSONString)
 
 // make vector layers using geojson objs
 var stateVectorLayer = new VectorLayer({
+  maxZoom: 6,
   source: new VectorSource({
     // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
     features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(stateGeoJSONObj)
@@ -99,11 +100,38 @@ var stateVectorLayer = new VectorLayer({
   }
 })
 
+var countyVectorLayer = new VectorLayer({
+  minZoom: 6,
+  source: new VectorSource({
+    // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
+    features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(countyGeoJSONObj)
+  }),
+  style: function(feature) {
+    style.getText().setText(feature.get("NAME"))
+    return style
+  }
+})
+
+var placeVectorLayer = new VectorLayer({
+  source: new VectorSource({
+    // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
+    features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(placeGeoJSONObj)
+  }),
+  style: function(feature) {
+    style.getText().setText(feature.get("NAME"))
+    return style
+  }
+})
+
 // create map
 var map = new Map({
-  layers: [new TileLayer({
-    source: new OSM()
-  }), stateVectorLayer],
+  layers: [
+    new TileLayer({
+      source: new OSM()
+    }),
+    stateVectorLayer,
+    countyVectorLayer,
+  ],
   target: "map",
   view: new View({
     center: [0, 0],
