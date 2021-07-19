@@ -3,3 +3,4 @@ dist/
 .parcel-cache/
 data/geojson/.DS_Store
 data/.DS_Store
+.DS_Store
