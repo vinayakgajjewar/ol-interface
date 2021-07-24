@@ -102,6 +102,7 @@ var stateVectorLayer = new VectorLayer({
 
 var countyVectorLayer = new VectorLayer({
   minZoom: 6,
+  maxZoom: 8,
   source: new VectorSource({
     // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
     features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(countyGeoJSONObj)
@@ -113,9 +114,23 @@ var countyVectorLayer = new VectorLayer({
 })
 
 var placeVectorLayer = new VectorLayer({
+  minZoom: 8,
+  maxZoom: 10,
   source: new VectorSource({
     // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
     features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(placeGeoJSONObj)
+  }),
+  style: function(feature) {
+    style.getText().setText(feature.get("NAME"))
+    return style
+  }
+})
+
+var zcta5VectorLayer = new VectorLayer({
+  minZoom: 10,
+  source: new VectorSource({
+    // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
+    features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(zcta5GeoJSONObj)
   }),
   style: function(feature) {
     style.getText().setText(feature.get("NAME"))
@@ -131,6 +146,8 @@ var map = new Map({
     }),
     stateVectorLayer,
     countyVectorLayer,
+    placeVectorLayer,
+    zcta5VectorLayer
   ],
   target: "map",
   view: new View({
