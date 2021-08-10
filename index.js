@@ -1,6 +1,9 @@
 // https://nodejs.dev/learn/the-nodejs-fs-module
 const fs = require("fs")
 
+// for fetching geojson from the backend
+const http = require("http")
+
 // https://openlayers.org/en/latest/examples/vector-layer.html
 import "ol/ol.css"
 import GeoJSON from "ol/format/GeoJSON"
@@ -11,6 +14,27 @@ import {OSM} from "ol/source" // https://openlayers.org/en/latest/examples/geojs
 import {Tile as TileLayer} from "ol/layer" // https://openlayers.org/en/latest/examples/geojson.html
 import View from "ol/View"
 import {Fill, Stroke, Style, Text} from "ol/style"
+
+http.get("http://localhost:8080/exampleinput.geojson", function (res) {
+
+  let data = "";
+
+  // chunk of data has been received
+  res.on("data", function (chunk) {
+    data += chunk;
+  });
+
+  // whole response has been received
+  res.on("end", function () {
+    console.log("----data");
+    console.log(JSON.parse(data));
+    console.log("----end data");
+  });
+}).on("error", function (err) {
+
+  // error
+  console.log(err);
+})
 
 // define default feature style
 var style = new Style({
