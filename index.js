@@ -237,7 +237,7 @@ map.on("click", function(evt) {
 })
 
 // url to get geospatial data from
-let url = "http://localhost:8080/exampleinput.geojson";
+let url = "http://localhost:8080/vectors/states.geojson";
 
 $(document).ready(function () {
   console.log("document ready");
