@@ -15,27 +15,6 @@ import {Tile as TileLayer} from "ol/layer" // https://openlayers.org/en/latest/e
 import View from "ol/View"
 import {Fill, Stroke, Style, Text} from "ol/style"
 
-http.get("http://localhost:8080/exampleinput.geojson", function (res) {
-
-  let data = "";
-
-  // chunk of data has been received
-  res.on("data", function (chunk) {
-    data += chunk;
-  });
-
-  // whole response has been received
-  res.on("end", function () {
-    console.log("----data");
-    console.log(JSON.parse(data));
-    console.log("----end data");
-  });
-}).on("error", function (err) {
-
-  // error
-  console.log(err);
-})
-
 // define default feature style
 var style = new Style({
   fill: new Fill({
@@ -162,16 +141,18 @@ var zcta5VectorLayer = new VectorLayer({
   }
 })
 
-// create map
+// create map with a single TileLayer
+// we'll dynamically add VectorLayers later on
 var map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
-    }),
+    })/*,
     stateVectorLayer,
     countyVectorLayer,
     placeVectorLayer,
     zcta5VectorLayer
+    */
   ],
   target: "map",
   view: new View({
@@ -254,3 +235,54 @@ map.on("pointermove", function(evt) {
 map.on("click", function(evt) {
   displayFeatureInfo(evt.pixel)
 })
+
+// url to get geospatial data from
+let url = "http://localhost:8080/exampleinput.geojson";
+
+$(document).ready(function () {
+  console.log("document ready");
+
+  // make http request to get geojson file
+  http.get(url, function (res) {
+
+    let data = "";
+
+    // chunk of data has been received
+    // add it to current data string
+    res.on("data", function (chunk) {
+      data += chunk;
+    });
+
+    // whole resource has been received
+    res.on("end", function () {
+
+      /*console.log("----start data");
+      console.log(JSON.parse(data));
+      console.log("----end data");*/
+
+      // add geospatial data to map
+      let geoJSONObj = JSON.parse(data);
+
+      // make vector layer using geojson obj
+      let vLayer = new VectorLayer({
+        maxZoom: 6,
+        source: new VectorSource({
+          // featureProjection: "EPSG:3857"} is necessary for the code to work with UCR-Star data
+          features: new GeoJSON({featureProjection: "EPSG:3857"}).readFeatures(geoJSONObj)
+        }),
+        style: function(feature) {
+          style.getText().setText(feature.get("NAME"));
+          return style;
+        }
+      });
+
+      // add vector layer to map
+      map.addLayer(vLayer);
+    });
+  }).on("error", function (err) {
+
+    console.log("----START ERROR");
+    console.log(err);
+    console.log("----END ERROR");
+  });
+});
